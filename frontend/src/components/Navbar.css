@@ -19,6 +19,24 @@
     color: #333;
 }
 
+.navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.profile-link {
+    text-decoration: none;
+    color: #666;
+    font-size: 1.1rem;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.profile-link:hover {
+    color: #007bff;
+}
+
 .navbar-links {
     list-style: none;
     display: flex;

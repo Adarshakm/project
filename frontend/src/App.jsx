@@ -3,10 +3,11 @@ import { BrowserRouter as Router, Routes, Route, useNavigate, useParams } from '
 import SplashScreen from './components/SplashScreen';
 import Navbar from './components/Navbar';
 import ChatView from './pages/ChatView';
+import Business from './pages/Business';
 import io from 'socket.io-client';
 import './App.css';
-
-const socket = io.connect("http://localhost:5000");
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+const socket = io.connect(BACKEND_URL);
 
 const dummyPeople = [
   { id: 1, name: 'Adarsh', lastMsg: 'Hey, how are you?', time: '10:30 AM' },
@@ -24,6 +25,7 @@ const dummyPeople = [
 ];
 
 import SocialFeed from './components/SocialFeed';
+import Profile from './components/Profile';
 
 const NewsList = () => {
   const dummyNews = [
@@ -112,7 +114,7 @@ const MainApp = () => {
           </div>
         </div>
         <div className="column-main" style={{ overflowY: 'auto', backgroundColor: '#fff' }}>
-          <SocialFeed />
+          {window.location.pathname === '/profile' ? <Profile /> : <SocialFeed />}
         </div>
         <div className="column-extra" style={{ backgroundColor: '#f9f9f9', display: 'flex', flexDirection: 'column', borderLeft: '1px solid #eee' }}>
           <div style={{ 
@@ -222,7 +224,7 @@ const ChatViewWrapper = () => {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/messages/${currentUser}/${name}`);
+        const response = await fetch(`${BACKEND_URL}/api/messages/${currentUser}/${name}`);
         const data = await response.json();
         setMessages(data);
       } catch (error) {
@@ -586,6 +588,8 @@ export default function App() {
       {(appReady || !isRoot) && (
         <Routes>
           <Route path="/" element={<MainApp />} />
+          <Route path="/profile" element={<MainApp />} />
+          <Route path="/business" element={<Business />} />
           <Route path="/chat/:name" element={<ChatViewWrapper />} />
         </Routes>
       )}
