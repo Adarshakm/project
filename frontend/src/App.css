@@ -1,0 +1,52 @@
+.main-layout {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    height: calc(100vh - 80px);
+    width: 100%;
+    gap: 0;
+    padding: 0;
+}
+
+.column-sidebar {
+    border-right: 1px solid #ccc;
+    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+}
+
+.column-main {
+    border-right: 1px solid #ccc;
+    padding: 0.5rem;
+}
+
+.column-extra {
+    padding: 0.5rem;
+}
+
+/* Mobile Screens */
+@media screen and (max-width: 768px) {
+    .main-layout {
+        display: flex; /* Switch to flex for easier horizontal scroll */
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none; /* Hide scrollbar for Firefox */
+        -ms-overflow-style: none; /* Hide scrollbar for IE/Edge */
+    }
+
+    .main-layout::-webkit-scrollbar {
+        display: none; /* Hide scrollbar for Chrome/Safari */
+    }
+
+    .column-sidebar,
+    .column-main,
+    .column-extra {
+        flex: 0 0 100%; /* Each column takes exactly 100% of viewport width */
+        width: 100%;
+        scroll-snap-align: start; /* Snap to the start of the column */
+        border-right: none;
+    }
+
+    .column-sidebar {
+        border-right: 1px solid #eee;
+    }
+}

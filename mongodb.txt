@@ -1,0 +1,7 @@
+adarshkm970_db_user
+Yim938oWEMkVXxcA
+
+mongodb+srv://adarshkm970_db_user:Yim938oWEMkVXxcA@cluster0.dtiqq9r.mongodb.net/?appName=Cluster0
+
+WwsX24MgrZMDfb92
+Adarsh
