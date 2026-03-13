@@ -5,6 +5,7 @@ import Navbar from './components/Navbar';
 import ChatView from './pages/ChatView';
 import Business from './pages/Business';
 import News from './pages/News';
+import Sports from './pages/Sports';
 import io from 'socket.io-client';
 import './App.css';
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
@@ -592,6 +593,7 @@ export default function App() {
           <Route path="/profile" element={<MainApp />} />
           <Route path="/business" element={<Business />} />
           <Route path="/news" element={<News />} />
+          <Route path="/sports" element={<Sports />} />
           <Route path="/chat/:name" element={<ChatViewWrapper />} />
         </Routes>
       )}

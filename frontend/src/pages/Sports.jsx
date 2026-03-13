@@ -1,60 +1,60 @@
 import React from 'react';
 import Navbar from '../components/Navbar';
 
-const worldNews = [
+const sportsNews = [
     { 
         id: 1, 
-        category: 'Politics', 
-        headline: 'Global Summit on Climate Action Concludes with Historic Agreement', 
-        summary: 'Leaders from 190 nations have pledged to accelerate the transition to renewable energy and significantly reduce carbon emissions by 2030.',
-        source: 'Global Times',
-        time: '2 hours ago',
-        color: '#1d9bf0',
-        image: '/assets/news/politics.png'
+        category: 'Soccer', 
+        headline: 'Championship Finals: Underdogs Clinch Victory in Last-Minute Thriller', 
+        summary: 'In a match that will be remembered for decades, the league underdogs secured the championship title with a stunning bicycle kick in the final minute of extra time.',
+        source: 'Sports Direct',
+        time: '1 hour ago',
+        color: '#00a884',
+        image: '/assets/sports/soccer.png'
     },
     { 
         id: 2, 
-        category: 'Technology', 
-        headline: 'Breakthrough in Quantum Computing Announced by Leading Research Lab', 
-        summary: 'A new quantum processor has successfully performed calculations that would take traditional supercomputers thousands of years to complete.',
-        source: 'Tech Daily',
-        time: '4 hours ago',
-        color: '#76B900',
-        image: '/assets/news/tech.png'
+        category: 'Basketball', 
+        headline: 'MVP Race Heats Up as Star Guard Drops Career-High 60 Points', 
+        summary: 'The battle for the MVP title reached new heights tonight as the league-leading guard delivered a masterclass performance, breaking multiple franchise records.',
+        source: 'Hoops Insider',
+        time: '3 hours ago',
+        color: '#ff9900',
+        image: '/assets/sports/basketball.png'
     },
     { 
         id: 3, 
-        category: 'Economics', 
-        headline: 'Central Banks Signal Shift in Monetary Policy Amid Cooling Inflation', 
-        summary: 'Global financial markets react positively as key central banks hint at potential interest rate cuts in the coming quarters.',
-        source: 'Financial Post',
-        time: '6 hours ago',
-        color: '#FF9900',
-        image: '/assets/news/economy.png'
+        category: 'Tennis', 
+        headline: 'Grand Slam Breakthrough: Teen Prodigy Reaches Semifinals', 
+        summary: 'A new star is born on the clay courts as a 17-year-old qualifier upsets the top seed to secure a historic spot in the Grand Slam semifinals.',
+        source: 'Tennis World',
+        time: '5 hours ago',
+        color: '#c2d500',
+        image: '/assets/sports/tennis.png'
     },
     { 
         id: 4, 
-        category: 'Health', 
-        headline: 'New Vaccine for Tropical Disease Shows High Efficacy in Phase 3 Trials', 
-        summary: 'The medical community celebrates a major milestone in public health as a new vaccine candidate demonstrates 95% protection against a widespread tropical virus.',
-        source: 'Health Journal',
-        time: '8 hours ago',
-        color: '#E31937',
-        image: '/assets/news/health.png'
+        category: 'Formula 1', 
+        headline: 'Night Race Spectacle: Tactical Masterstroke Secures Podium Finish', 
+        summary: 'Under the floodlights of the city circuit, a bold pit strategy allowed the chasing pack to leapfrog the leaders in a high-speed game of tactical chess.',
+        source: 'F1 Pulse',
+        time: '7 hours ago',
+        color: '#e10600',
+        image: '/assets/sports/f1.png'
     },
     { 
         id: 5, 
-        category: 'Science', 
-        headline: 'Deep Space Telescope Captures Unprecedented Detail of Early Galaxy Formation', 
-        summary: 'Astrophysicists are re-evaluating theories of the early universe after new images reveal complex structures in galaxies formed just 300 million years after the Big Bang.',
-        source: 'Science Orbit',
-        time: '12 hours ago',
-        color: '#4285F4',
-        image: '/assets/news/science.png'
+        category: 'Cricket', 
+        headline: 'Record-Breaking Century Leads Team to Historic Series Win', 
+        summary: 'A breathtaking display of power hitting saw the visiting captain smash a 40-ball century, guiding their team to a dominant series victory.',
+        source: 'Cricket Daily',
+        time: '10 hours ago',
+        color: '#1d9bf0',
+        image: '/assets/sports/cricket.png'
     }
 ];
 
-const News = () => {
+const Sports = () => {
     return (
         <div style={{ paddingTop: '80px', height: '100vh', display: 'flex', flexDirection: 'column', boxSizing: 'border-box' }}>
             <Navbar />
@@ -71,16 +71,16 @@ const News = () => {
                         fontSize: '1.4rem',
                         fontWeight: 'bold',
                         color: '#333'
-                    }}>News</div>
+                    }}>Sports</div>
                     <div style={{ flex: 1, overflowY: 'auto', padding: '1rem' }}>
                         <div style={{ padding: '0.8rem', cursor: 'pointer', borderBottom: '1px solid #eee', fontWeight: 'bold', color: '#1d9bf0' }}>
-                            World News
+                            World Sports
                         </div>
                         <div style={{ padding: '0.8rem', cursor: 'pointer', borderBottom: '1px solid #eee', color: '#555' }}>
-                            Local Updates
+                            Live Scores
                         </div>
                         <div style={{ padding: '0.8rem', cursor: 'pointer', borderBottom: '1px solid #eee', color: '#555' }}>
-                            Technology
+                            Transfers
                         </div>
                     </div>
                 </div>
@@ -99,14 +99,14 @@ const News = () => {
                             fontWeight: 'bold',
                             fontSize: '1.2rem'
                         }}>
-                            World
+                            Latest Updates
                         </div>
                     </div>
                     
                     {/* Main content area */}
                     <div style={{ padding: '2rem', flex: 1, overflowY: 'auto', backgroundColor: '#fcfcfc' }}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', maxWidth: '900px', margin: '0 auto' }}>
-                            {worldNews.map((item) => (
+                            {sportsNews.map((item) => (
                                 <div 
                                     key={item.id} 
                                     style={{ 
@@ -167,7 +167,7 @@ const News = () => {
                                             <p style={{ margin: 0, color: '#555', fontSize: '0.95rem', lineHeight: '1.6', display: '-webkit-box', WebkitLineClamp: '3', WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{item.summary}</p>
                                         </div>
                                         <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem' }}>
-                                            <span style={{ color: item.color, fontSize: '0.9rem', fontWeight: 'bold' }}>Read Full Story →</span>
+                                            <span style={{ color: item.color, fontSize: '0.9rem', fontWeight: 'bold' }}>Watch Highlights →</span>
                                         </div>
                                     </div>
                                 </div>
@@ -180,4 +180,4 @@ const News = () => {
     );
 };
 
-export default News;
+export default Sports;
