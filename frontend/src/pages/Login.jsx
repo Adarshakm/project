@@ -160,19 +160,25 @@ const Login = () => {
                             style={{
                                 width: '100%',
                                 padding: '16px',
-                                backgroundColor: '#007bff',
-                                color: '#fff',
+                                backgroundColor: '#ffffff',
+                                color: '#000000',
                                 border: 'none',
                                 borderRadius: '10px',
                                 fontSize: '1.1rem',
-                                fontWeight: '600',
+                                fontWeight: '700',
                                 cursor: 'pointer',
                                 transition: 'all 0.2s',
                                 marginTop: '0.5rem',
-                                boxShadow: '0 4px 12px rgba(0,123,255,0.3)'
+                                boxShadow: '0 4px 12px rgba(255,255,255,0.1)'
                             }}
-                            onMouseOver={(e) => e.target.style.transform = 'translateY(-1px)'}
-                            onMouseOut={(e) => e.target.style.transform = 'translateY(0)'}
+                            onMouseOver={(e) => {
+                                e.target.style.backgroundColor = '#f0f0f0';
+                                e.target.style.transform = 'translateY(-1px)';
+                            }}
+                            onMouseOut={(e) => {
+                                e.target.style.backgroundColor = '#ffffff';
+                                e.target.style.transform = 'translateY(0)';
+                            }}
                         >
                             Sign in
                         </button>
