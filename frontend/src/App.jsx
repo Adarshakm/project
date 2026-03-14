@@ -6,6 +6,8 @@ import ChatView from './pages/ChatView';
 import Business from './pages/Business';
 import News from './pages/News';
 import Sports from './pages/Sports';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
 import io from 'socket.io-client';
 import './App.css';
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
@@ -579,6 +581,9 @@ export default function App() {
 
   const handleSplashComplete = () => {
     setAppReady(true);
+    if (window.location.pathname === '/') {
+        window.location.href = '/login';
+    }
   };
 
   const isRoot = window.location.pathname === '/';
@@ -590,6 +595,8 @@ export default function App() {
       {(appReady || !isRoot) && (
         <Routes>
           <Route path="/" element={<MainApp />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
           <Route path="/profile" element={<MainApp />} />
           <Route path="/business" element={<Business />} />
           <Route path="/news" element={<News />} />
