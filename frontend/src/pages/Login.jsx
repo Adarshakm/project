@@ -33,7 +33,7 @@ const Login = () => {
                 justifyContent: 'center',
                 padding: '4rem',
                 color: '#fff',
-                background: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/assets/login-bg.png')`,
+                backgroundColor: '#000',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 '@media (max-width: 900px)': {
@@ -68,25 +68,25 @@ const Login = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 padding: '2rem',
-                backgroundColor: '#ffffff'
+                backgroundColor: '#000'
             }}>
                 <div style={{ width: '100%', maxWidth: '400px' }}>
                     <h1 style={{ 
                         fontSize: '2.2rem', 
                         fontWeight: '800', 
-                        color: '#1a1a1a', 
+                        color: '#ffffff', 
                         marginBottom: '0.8rem',
                         letterSpacing: '-0.5px'
                     }}>
                         Welcome Back
                     </h1>
-                    <p style={{ color: '#666', marginBottom: '2.5rem', fontSize: '1.1rem' }}>
+                    <p style={{ color: '#aaa', marginBottom: '2.5rem', fontSize: '1.1rem' }}>
                         Log in to your researcher account
                     </p>
                     
                     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                         <div style={{ textAlign: 'left' }}>
-                            <label style={{ fontSize: '0.9rem', fontWeight: '600', color: '#444', marginBottom: '0.6rem', display: 'block' }}>Email Address</label>
+                            <label style={{ fontSize: '0.9rem', fontWeight: '600', color: '#ddd', marginBottom: '0.6rem', display: 'block' }}>Email Address</label>
                             <input 
                                 type="email" 
                                 name="email"
@@ -98,26 +98,28 @@ const Login = () => {
                                     width: '100%',
                                     padding: '14px 18px',
                                     borderRadius: '10px',
-                                    border: '1.5px solid #e0e0e0',
+                                    border: '1.5px solid #333',
                                     fontSize: '1rem',
                                     outline: 'none',
                                     transition: 'all 0.2s',
                                     boxSizing: 'border-box',
-                                    boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
+                                    backgroundColor: '#111',
+                                    color: '#fff',
+                                    boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
                                 }}
                                 onFocus={(e) => {
                                     e.target.style.borderColor = '#007bff';
-                                    e.target.style.boxShadow = '0 0 0 4px rgba(0,123,255,0.1)';
+                                    e.target.style.boxShadow = '0 0 0 4px rgba(0,123,255,0.2)';
                                 }}
                                 onBlur={(e) => {
-                                    e.target.style.borderColor = '#e0e0e0';
-                                    e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.02)';
+                                    e.target.style.borderColor = '#333';
+                                    e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
                                 }}
                             />
                         </div>
                         
                         <div style={{ textAlign: 'left' }}>
-                            <label style={{ fontSize: '0.9rem', fontWeight: '600', color: '#444', marginBottom: '0.6rem', display: 'block' }}>Password</label>
+                            <label style={{ fontSize: '0.9rem', fontWeight: '600', color: '#ddd', marginBottom: '0.6rem', display: 'block' }}>Password</label>
                             <input 
                                 type="password" 
                                 name="password"
@@ -129,26 +131,28 @@ const Login = () => {
                                     width: '100%',
                                     padding: '14px 18px',
                                     borderRadius: '10px',
-                                    border: '1.5px solid #e0e0e0',
+                                    border: '1.5px solid #333',
                                     fontSize: '1rem',
                                     outline: 'none',
                                     transition: 'all 0.2s',
                                     boxSizing: 'border-box',
-                                    boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
+                                    backgroundColor: '#111',
+                                    color: '#fff',
+                                    boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
                                 }}
                                 onFocus={(e) => {
                                     e.target.style.borderColor = '#007bff';
-                                    e.target.style.boxShadow = '0 0 0 4px rgba(0,123,255,0.1)';
+                                    e.target.style.boxShadow = '0 0 0 4px rgba(0,123,255,0.2)';
                                 }}
                                 onBlur={(e) => {
-                                    e.target.style.borderColor = '#e0e0e0';
-                                    e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.02)';
+                                    e.target.style.borderColor = '#333';
+                                    e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
                                 }}
                             />
                         </div>
 
                         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                            <span style={{ fontSize: '0.85rem', color: '#007bff', cursor: 'pointer', fontWeight: '500' }}>Forgot password?</span>
+                            <span style={{ fontSize: '0.85rem', color: '#3d9afc', cursor: 'pointer', fontWeight: '500' }}>Forgot password?</span>
                         </div>
 
                         <button 
@@ -165,7 +169,7 @@ const Login = () => {
                                 cursor: 'pointer',
                                 transition: 'all 0.2s',
                                 marginTop: '0.5rem',
-                                boxShadow: '0 4px 12px rgba(0,123,255,0.25)'
+                                boxShadow: '0 4px 12px rgba(0,123,255,0.3)'
                             }}
                             onMouseOver={(e) => e.target.style.transform = 'translateY(-1px)'}
                             onMouseOut={(e) => e.target.style.transform = 'translateY(0)'}
@@ -174,8 +178,8 @@ const Login = () => {
                         </button>
                     </form>
 
-                    <div style={{ marginTop: '2rem', fontSize: '0.95rem', color: '#666', textAlign: 'center' }}>
-                        Don't have an account? <span onClick={() => navigate('/signup')} style={{ color: '#007bff', cursor: 'pointer', fontWeight: '700' }}>Sign up</span>
+                    <div style={{ marginTop: '2rem', fontSize: '0.95rem', color: '#888', textAlign: 'center' }}>
+                        Don't have an account? <span onClick={() => navigate('/signup')} style={{ color: '#3d9afc', cursor: 'pointer', fontWeight: '700' }}>Sign up</span>
                     </div>
                 </div>
             </div>
