@@ -6,210 +6,374 @@ const Signup = () => {
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
+        phone: '',
         password: '',
         confirmPassword: ''
     });
-    const [isLoading, setIsLoading] = useState(false);
+    const [passwordStrength, setPasswordStrength] = useState({ score: 0, label: '', color: '#ddd' });
+
+    const getPasswordStrength = (password) => {
+        let score = 0;
+        if (!password) return { score: 0, label: '', color: '#ddd' };
+
+        if (password.length >= 8) score++;
+        if (/[A-Z]/.test(password)) score++;
+        if (/[a-z]/.test(password)) score++;
+        if (/[0-9]/.test(password)) score++;
+        if (/[@$!%*?&]/.test(password)) score++;
+
+        switch (score) {
+            case 0:
+            case 1:
+            case 2:
+                return { score, label: 'Weak', color: '#ff4d4d' };
+            case 3:
+            case 4:
+                return { score, label: 'Medium', color: '#ffd700' };
+            case 5:
+                return { score, label: 'Strong', color: '#00ff00' };
+            default:
+                return { score: 0, label: '', color: '#ddd' };
+        }
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
+
+        if (name === 'password') {
+            setPasswordStrength(getPasswordStrength(value));
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        // Basic validation
         if (formData.password !== formData.confirmPassword) {
             alert("Passwords mismatch!");
             return;
         }
-        
-        setIsLoading(true);
+
         try {
             const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+
+            // Normalize email
+            const normalizedEmail = formData.email.toLowerCase().trim();
+            const normalizedPhone = formData.phone ? formData.phone.trim() : "";
+
             const response = await fetch(`${BACKEND_URL}/api/auth/signup`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                },
                 body: JSON.stringify({
-                    fullName: formData.fullName,
-                    email: formData.email,
+                    fullName: formData.fullName.trim(),
+                    email: normalizedEmail,
+                    phone: normalizedPhone,
                     password: formData.password
-                })
+                }),
             });
+
             const data = await response.json();
-            
+
             if (response.ok) {
-                alert("Account created successfully. Please login.");
-                navigate('/');
+                alert("Account created successfully!");
+                navigate('/login');
             } else {
-                alert(data.message || "Signup failed");
+                alert(data.message || "Registration failed");
             }
         } catch (error) {
             console.error("Signup error:", error);
-            alert("Connection error. Is the server running?");
-        } finally {
-            setIsLoading(false);
+            alert("An error occurred during signup. Please try again.");
         }
     };
 
     return (
         <div style={{
             display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            minHeight: '100vh',
+            height: '100vh',
+            width: '100vw',
+            backgroundColor: '#000',
             fontFamily: "'Inter', sans-serif",
-            background: 'linear-gradient(135deg, #0f172a 0%, #172554 50%, #1e1b4b 100%)',
-            position: 'relative',
-            overflow: 'hidden',
-            padding: '2rem'
+            overflow: 'hidden'
         }}>
-            {/* Background glowing orbs */}
+            {/* Left Column: Visual Area */}
             <div style={{
-                position: 'absolute', top: '-10%', right: '10%', width: '40vw', height: '40vw', 
-                background: 'radial-gradient(circle, rgba(139,92,246,0.15) 0%, rgba(0,0,0,0) 70%)', borderRadius: '50%', zIndex: 0
-            }}></div>
-            <div style={{
-                position: 'absolute', bottom: '-5%', left: '5%', width: '45vw', height: '45vw', 
-                background: 'radial-gradient(circle, rgba(59,130,246,0.15) 0%, rgba(0,0,0,0) 70%)', borderRadius: '50%', zIndex: 0
-            }}></div>
-
-            <div style={{
-                width: '100%',
-                maxWidth: '480px',
-                padding: '2.5rem',
-                background: 'rgba(255, 255, 255, 0.03)',
-                backdropFilter: 'blur(16px)',
-                WebkitBackdropFilter: 'blur(16px)',
-                borderRadius: '24px',
-                border: '1px solid rgba(255, 255, 255, 0.08)',
-                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+                flex: '1.2',
                 position: 'relative',
-                zIndex: 1,
-                color: 'white'
-            }}>
-                <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-                    <div style={{
-                        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                        width: '56px', height: '56px', borderRadius: '16px',
-                        background: 'linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%)',
-                        marginBottom: '1rem', boxShadow: '0 8px 16px rgba(59, 130, 246, 0.3)'
-                    }}>
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M16 21v-2a4 4 0 0 0-4-4H5c-1.1 0-2 .9-2 2v2"></path>
-                            <circle cx="8.5" cy="7" r="4"></circle>
-                            <line x1="20" y1="8" x2="20" y2="14"></line>
-                            <line x1="23" y1="11" x2="17" y2="11"></line>
-                        </svg>
-                    </div>
-                    <h2 style={{ fontSize: '1.75rem', fontWeight: '700', margin: 0, letterSpacing: '-0.5px' }}>Join Us</h2>
-                    <p style={{ color: '#94a3b8', marginTop: '0.5rem', fontSize: '0.95rem' }}>Create your account to start your journey.</p>
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                padding: '4rem',
+                color: '#fff',
+                backgroundColor: '#000',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+            }} className="signup-visual-sidebar">
+                <style>
+                    {`
+                    @media (max-width: 900px) {
+                        .signup-visual-sidebar { display: none !important; }
+                    }
+                    `}
+                </style>
+                <div style={{ position: 'relative', zIndex: 1 }}>
+                    <h2 style={{ fontSize: '3rem', fontWeight: '800', marginBottom: '1.5rem', lineHeight: '1.1' }}>
+                        Begin Your <br /> Research Journey.
+                    </h2>
+                    <p style={{ fontSize: '1.2rem', opacity: 0.9, maxWidth: '400px', lineHeight: '1.6' }}>
+                        Create an account to start collaborating with researchers worldwide and access advanced scientific tools.
+                    </p>
                 </div>
+                <div style={{ position: 'absolute', bottom: '4rem', left: '4rem', zIndex: 1 }}>
+                    <div style={{ fontSize: '0.9rem', opacity: 0.7 }}>Powered by Assistance</div>
+                </div>
+            </div>
 
-                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                    
-                    <div>
-                        <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', color: '#cbd5e1', marginBottom: '0.4rem' }}>Full Name</label>
-                        <input 
-                            type="text" 
-                            name="fullName"
-                            required
-                            value={formData.fullName}
-                            onChange={handleChange}
-                            placeholder="Dr. Jane Doe"
-                            style={{
-                                width: '100%', padding: '0.875rem 1rem', borderRadius: '12px',
-                                border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)',
-                                color: 'white', fontSize: '1rem', outline: 'none', transition: 'all 0.2s ease',
-                                boxSizing: 'border-box'
-                            }}
-                            onFocus={(e) => { e.target.style.borderColor = '#8b5cf6'; e.target.style.background = 'rgba(0,0,0,0.4)'; }}
-                            onBlur={(e) => { e.target.style.borderColor = 'rgba(255,255,255,0.1)'; e.target.style.background = 'rgba(0,0,0,0.2)'; }}
-                        />
-                    </div>
-                    
-                    <div>
-                        <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', color: '#cbd5e1', marginBottom: '0.4rem' }}>Email Address</label>
-                        <input 
-                            type="email" 
-                            name="email"
-                            required
-                            value={formData.email}
-                            onChange={handleChange}
-                            placeholder="name@example.com"
-                            style={{
-                                width: '100%', padding: '0.875rem 1rem', borderRadius: '12px',
-                                border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)',
-                                color: 'white', fontSize: '1rem', outline: 'none', transition: 'all 0.2s ease',
-                                boxSizing: 'border-box'
-                            }}
-                            onFocus={(e) => { e.target.style.borderColor = '#8b5cf6'; e.target.style.background = 'rgba(0,0,0,0.4)'; }}
-                            onBlur={(e) => { e.target.style.borderColor = 'rgba(255,255,255,0.1)'; e.target.style.background = 'rgba(0,0,0,0.2)'; }}
-                        />
-                    </div>
+            {/* Right Column: Form Area */}
+            <div style={{
+                flex: '1',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                padding: '2rem',
+                backgroundColor: '#000',
+                overflowY: 'auto'
+            }}>
+                <div style={{ width: '100%', maxWidth: '400px', padding: '1rem 0' }}>
+                    <h1 style={{
+                        fontSize: '2.2rem',
+                        fontWeight: '800',
+                        color: '#ffffff',
+                        marginBottom: '0.8rem',
+                        letterSpacing: '-0.5px'
+                    }}>
+                        Create Account
+                    </h1>
+                    <p style={{ color: '#aaa', marginBottom: '1rem', fontSize: '1.1rem' }}>
+                        Join the global researcher community
+                    </p>
 
-                    <div>
-                        <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', color: '#cbd5e1', marginBottom: '0.4rem' }}>Password</label>
-                        <input 
-                            type="password" 
-                            name="password"
-                            required
-                            value={formData.password}
-                            onChange={handleChange}
-                            placeholder="Create a strong password"
-                            style={{
-                                width: '100%', padding: '0.875rem 1rem', borderRadius: '12px',
-                                border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)',
-                                color: 'white', fontSize: '1rem', outline: 'none', transition: 'all 0.2s ease',
-                                boxSizing: 'border-box'
-                            }}
-                            onFocus={(e) => { e.target.style.borderColor = '#8b5cf6'; e.target.style.background = 'rgba(0,0,0,0.4)'; }}
-                            onBlur={(e) => { e.target.style.borderColor = 'rgba(255,255,255,0.1)'; e.target.style.background = 'rgba(0,0,0,0.2)'; }}
-                        />
-                    </div>
-                    
-                    <div>
-                        <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', color: '#cbd5e1', marginBottom: '0.4rem' }}>Confirm Password</label>
-                        <input 
-                            type="password" 
-                            name="confirmPassword"
-                            required
-                            value={formData.confirmPassword}
-                            onChange={handleChange}
-                            placeholder="Confirm your password"
-                            style={{
-                                width: '100%', padding: '0.875rem 1rem', borderRadius: '12px',
-                                border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)',
-                                color: 'white', fontSize: '1rem', outline: 'none', transition: 'all 0.2s ease',
-                                boxSizing: 'border-box'
-                            }}
-                            onFocus={(e) => { e.target.style.borderColor = '#8b5cf6'; e.target.style.background = 'rgba(0,0,0,0.4)'; }}
-                            onBlur={(e) => { e.target.style.borderColor = 'rgba(255,255,255,0.1)'; e.target.style.background = 'rgba(0,0,0,0.2)'; }}
-                        />
-                    </div>
+                    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                        <div style={{ textAlign: 'left' }}>
+                            <label style={{ fontSize: '0.9rem', fontWeight: '600', color: '#ddd', marginBottom: '0.4rem', display: 'block' }}>Full Name</label>
+                            <input
+                                type="text"
+                                name="fullName"
+                                required
+                                value={formData.fullName}
+                                onChange={handleChange}
+                                placeholder="John Doe"
+                                style={{
+                                    width: '100%',
+                                    padding: '10px 14px',
+                                    borderRadius: '10px',
+                                    border: '1.5px solid #e0e0e0',
+                                    fontSize: '1rem',
+                                    outline: 'none',
+                                    transition: 'all 0.2s',
+                                    boxSizing: 'border-box',
+                                    backgroundColor: '#ffffff',
+                                    color: '#000000',
+                                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                                }}
+                                onFocus={(e) => {
+                                    e.target.style.borderColor = '#007bff';
+                                    e.target.style.boxShadow = '0 0 0 4px rgba(0,123,255,0.2)';
+                                }}
+                                onBlur={(e) => {
+                                    e.target.style.borderColor = '#e0e0e0';
+                                    e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+                                }}
+                            />
+                        </div>
 
-                    <button 
-                        type="submit"
-                        disabled={isLoading}
-                        style={{
-                            width: '100%', padding: '0.875rem', marginTop: '0.5rem',
-                            background: 'linear-gradient(135deg, #4f46e5 0%, #2563eb 100%)',
-                            color: 'white', border: 'none', borderRadius: '12px',
-                            fontSize: '1rem', fontWeight: '600', cursor: isLoading ? 'wait' : 'pointer',
-                            transition: 'all 0.2s', boxShadow: '0 4px 12px rgba(37, 99, 235, 0.4)',
-                            opacity: isLoading ? 0.7 : 1
-                        }}
-                        onMouseOver={(e) => !isLoading && (e.target.style.transform = 'translateY(-1px)')}
-                        onMouseOut={(e) => !isLoading && (e.target.style.transform = 'translateY(0)')}
-                        onMouseDown={(e) => !isLoading && (e.target.style.transform = 'translateY(1px)')}
-                        onMouseUp={(e) => !isLoading && (e.target.style.transform = 'translateY(-1px)')}
-                    >
-                        {isLoading ? 'Creating account...' : 'Create Account'}
-                    </button>
-                </form>
+                        <div style={{ textAlign: 'left' }}>
+                            <label style={{ fontSize: '0.9rem', fontWeight: '600', color: '#ddd', marginBottom: '0.4rem', display: 'block' }}>Email Address</label>
+                            <input
+                                type="email"
+                                name="email"
+                                required
+                                value={formData.email}
+                                onChange={handleChange}
+                                placeholder="name@company.com"
+                                style={{
+                                    width: '100%',
+                                    padding: '10px 14px',
+                                    borderRadius: '10px',
+                                    border: '1.5px solid #e0e0e0',
+                                    fontSize: '1rem',
+                                    outline: 'none',
+                                    transition: 'all 0.2s',
+                                    boxSizing: 'border-box',
+                                    backgroundColor: '#ffffff',
+                                    color: '#000000',
+                                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                                }}
+                                onFocus={(e) => {
+                                    e.target.style.borderColor = '#007bff';
+                                    e.target.style.boxShadow = '0 0 0 4px rgba(0,123,255,0.2)';
+                                }}
+                                onBlur={(e) => {
+                                    e.target.style.borderColor = '#e0e0e0';
+                                    e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+                                }}
+                            />
+                        </div>
 
-                <p style={{ textAlign: 'center', marginTop: '2rem', fontSize: '0.9rem', color: '#94a3b8' }}>
-                    Already have an account? <strong onClick={() => navigate('/')} style={{ color: '#fff', cursor: 'pointer' }}>Sign in</strong>
-                </p>
+                        <div style={{ textAlign: 'left' }}>
+                            <label style={{ fontSize: '0.9rem', fontWeight: '600', color: '#ddd', marginBottom: '0.4rem', display: 'block' }}>Phone Number</label>
+                            <input
+                                type="tel"
+                                name="phone"
+                                value={formData.phone}
+                                onChange={handleChange}
+                                placeholder="+1 234 567 890"
+                                style={{
+                                    width: '100%',
+                                    padding: '10px 14px',
+                                    borderRadius: '10px',
+                                    border: '1.5px solid #e0e0e0',
+                                    fontSize: '1rem',
+                                    outline: 'none',
+                                    transition: 'all 0.2s',
+                                    boxSizing: 'border-box',
+                                    backgroundColor: '#ffffff',
+                                    color: '#000000',
+                                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                                }}
+                                onFocus={(e) => {
+                                    e.target.style.borderColor = '#007bff';
+                                    e.target.style.boxShadow = '0 0 0 4px rgba(0,123,255,0.2)';
+                                }}
+                                onBlur={(e) => {
+                                    e.target.style.borderColor = '#e0e0e0';
+                                    e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+                                }}
+                            />
+                        </div>
+
+                        <div style={{ textAlign: 'left' }}>
+                            <label style={{ fontSize: '0.9rem', fontWeight: '600', color: '#ddd', marginBottom: '0.4rem', display: 'block' }}>Password</label>
+                            <input
+                                type="password"
+                                name="password"
+                                required
+                                value={formData.password}
+                                onChange={handleChange}
+                                placeholder="••••••••"
+                                style={{
+                                    width: '100%',
+                                    padding: '10px 14px',
+                                    borderRadius: '10px',
+                                    border: '1.5px solid #333',
+                                    fontSize: '1rem',
+                                    outline: 'none',
+                                    transition: 'all 0.2s',
+                                    boxSizing: 'border-box',
+                                    backgroundColor: '#111',
+                                    color: '#fff',
+                                    boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                                }}
+                                onFocus={(e) => {
+                                    e.target.style.borderColor = '#007bff';
+                                    e.target.style.boxShadow = '0 0 0 4px rgba(0,123,255,0.2)';
+                                }}
+                                onBlur={(e) => {
+                                    e.target.style.borderColor = '#333';
+                                    e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
+                                }}
+                            />
+                            {formData.password && (
+                                <div style={{ marginTop: '0.4rem' }}>
+                                    <div style={{
+                                        height: '4px',
+                                        width: '100%',
+                                        backgroundColor: '#222',
+                                        borderRadius: '2px',
+                                        overflow: 'hidden'
+                                    }}>
+                                        <div style={{
+                                            height: '100%',
+                                            width: `${(passwordStrength.score / 5) * 100}%`,
+                                            backgroundColor: passwordStrength.color,
+                                            transition: 'width 0.3s ease'
+                                        }} />
+                                    </div>
+                                    <span style={{ fontSize: '0.75rem', color: passwordStrength.color, marginTop: '2px', display: 'block' }}>
+                                        Strength: {passwordStrength.label}
+                                    </span>
+                                </div>
+                            )}
+                        </div>
+
+                        <div style={{ textAlign: 'left' }}>
+                            <label style={{ fontSize: '0.9rem', fontWeight: '600', color: '#ddd', marginBottom: '0.4rem', display: 'block' }}>Confirm Password</label>
+                            <input
+                                type="password"
+                                name="confirmPassword"
+                                required
+                                value={formData.confirmPassword}
+                                onChange={handleChange}
+                                placeholder="••••••••"
+                                style={{
+                                    width: '100%',
+                                    padding: '10px 14px',
+                                    borderRadius: '10px',
+                                    border: '1.5px solid #333',
+                                    fontSize: '1rem',
+                                    outline: 'none',
+                                    transition: 'all 0.2s',
+                                    boxSizing: 'border-box',
+                                    backgroundColor: '#111',
+                                    color: '#fff',
+                                    boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                                }}
+                                onFocus={(e) => {
+                                    e.target.style.borderColor = '#007bff';
+                                    e.target.style.boxShadow = '0 0 0 4px rgba(0,123,255,0.2)';
+                                }}
+                                onBlur={(e) => {
+                                    e.target.style.borderColor = '#333';
+                                    e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
+                                }}
+                            />
+                        </div>
+
+                        <button
+                            type="submit"
+                            style={{
+                                width: '100%',
+                                padding: '12px',
+                                backgroundColor: '#ffffff',
+                                color: '#000000',
+                                border: 'none',
+                                borderRadius: '10px',
+                                fontSize: '1.1rem',
+                                fontWeight: '700',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s',
+                                marginTop: '0.5rem',
+                                boxShadow: '0 4px 12px rgba(255,255,255,0.1)'
+                            }}
+                            onMouseOver={(e) => {
+                                e.target.style.backgroundColor = '#f0f0f0';
+                                e.target.style.transform = 'translateY(-1px)';
+                            }}
+                            onMouseOut={(e) => {
+                                e.target.style.backgroundColor = '#ffffff';
+                                e.target.style.transform = 'translateY(0)';
+                            }}
+                        >
+                            Create Account
+                        </button>
+                    </form>
+
+                    <div style={{ marginTop: '1rem', fontSize: '0.95rem', color: '#888', textAlign: 'center' }}>
+                        Already have an account? <span onClick={() => navigate('/login')} style={{ color: '#3d9afc', cursor: 'pointer', fontWeight: '700' }}>Sign in</span>
+                    </div>
+                </div>
             </div>
         </div>
     );

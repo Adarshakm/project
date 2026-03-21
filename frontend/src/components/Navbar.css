@@ -4,8 +4,8 @@
     align-items: center;
     height: 80px;
     padding: 0 2rem;
-    background-color: #ffffff;
-    border-bottom: 1px solid #f0f0f0;
+    background-color: #000000;
+    border-bottom: 1px solid #333;
     position: fixed;
     top: 0;
     left: 0;
@@ -16,7 +16,7 @@
 .navbar-brand {
     font-size: 1.5rem;
     font-weight: bold;
-    color: #0084ff;
+    color: #ffffff;
 }
 
 .navbar-brand-link {
@@ -29,21 +29,125 @@
     gap: 1.5rem;
 }
 
+.profile-link {
+    text-decoration: none;
+    color: #cccccc;
+    font-size: 1.1rem;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.profile-link:hover {
+    color: #ffffff;
+}
+
+.navbar-links {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+}
+
+.navbar-links li a {
+    text-decoration: none;
+    color: #666;
+    font-size: 1rem;
+    transition: color 0.2s;
+}
+
+.navbar-links li a:hover {
+    color: #333;
+}
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-user {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    background-color: #111;
+    border: 1px solid #222;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.navbar-user:hover {
+    background-color: #222;
+    border-color: #444;
+}
+
+.navbar-username {
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.navbar-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: bold;
+    font-size: 0.9rem;
+    border: 1px solid #444;
+}
+
+.logout-btn {
+    margin-left: 1.5rem;
+    padding: 0.5rem 1.2rem;
+    background-color: transparent;
+    border: 1px solid #ff444466;
+    color: #ff4444;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.logout-btn:hover {
+    background-color: #ff444411;
+    border-color: #ff4444;
+}
+
 /* Mobile Screens */
 @media screen and (max-width: 768px) {
     .navbar {
         padding: 0 1rem;
     }
-    
+
     .navbar-left {
         overflow-x: auto;
         white-space: nowrap;
-        padding-bottom: 5px; /* space for scroll if visible */
-        -ms-overflow-style: none;  /* IE and Edge */
-        scrollbar-width: none;  /* Firefox */
+        padding-bottom: 5px;
+        /* space for scroll if visible */
+        -ms-overflow-style: none;
+        /* IE and Edge */
+        scrollbar-width: none;
+        /* Firefox */
     }
-    
+
     .navbar-left::-webkit-scrollbar {
-        display: none; /* Chrome, Safari and Opera */
+        display: none;
+        /* Chrome, Safari and Opera */
+    }
+
+    .navbar-username {
+        display: block;
+        /* Show name on mobile as requested */
+        font-size: 0.85rem;
+    }
+
+    .navbar-user {
+        gap: 0.5rem;
+        padding: 0.3rem 0.8rem;
     }
 }

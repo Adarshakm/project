@@ -1,187 +1,268 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate, Navigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import SplashScreen from './components/SplashScreen';
 import Navbar from './components/Navbar';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
-import ConversationList from './components/ConversationList';
-import ChatWindow from './components/ChatWindow';
-import { io } from 'socket.io-client';
-import './index.css';
+import PersonalInformation from './pages/PersonalInformation';
+import CreateUserName from './pages/CreateUserName';
+import AddGender from './pages/AddGender';
+import NewContact from './pages/NewContact';
+import './App.css';
 
 const MainApp = () => {
-  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState('personal');
+  const [personalView, setPersonalView] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('view') === 'messages' ? 'messages' : null;
+  });
+  const [contacts, setContacts] = useState([]);
+  const [loadingContacts, setLoadingContacts] = useState(false);
   const [user, setUser] = useState(null);
+  const scrollRef = useRef(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  // Real-time Chat State
-  const [conversations, setConversations] = useState([]);
-  const [currentChat, setCurrentChat] = useState(null);
-  const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState('');
-  const [onlineUsers, setOnlineUsers] = useState([]);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  
-  const socket = React.useRef();
-  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
-  // Watch for window resize
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 768);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-  
-  // Auth Protection
+
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
-    const token = localStorage.getItem('token');
-    if (storedUser && token) {
+    if (storedUser) {
       setUser(JSON.parse(storedUser));
-    } else {
-      navigate('/');
     }
-  }, [navigate]);
+  }, []);
 
-  // Socket Connection Setup
   useEffect(() => {
-    if (user) {
-      socket.current = io(BACKEND_URL);
-      socket.current.emit("addUser", user.id);
-      
-      socket.current.on("getOnlineUsers", (users) => {
-        setOnlineUsers(users);
-      });
-      
-      socket.current.on("getMessage", (data) => {
-        setMessages(prev => [...prev, {
-          sender: data.sender,
-          text: data.text,
-          createdAt: data.createdAt
-        }]);
-      });
+    if (personalView === 'contacts') {
+      fetchContacts();
     }
-    return () => socket.current?.disconnect();
-  }, [user, BACKEND_URL]);
+  }, [personalView]);
 
-  // Fetch Conversations List
-  useEffect(() => {
-    const getConversations = async () => {
-      try {
-        const res = await fetch(`${BACKEND_URL}/api/conversations/${user?.id}`);
-        const data = await res.json();
-        setConversations(Array.isArray(data) ? data : []);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    if (user) getConversations();
-  }, [user, BACKEND_URL]);
-
-  // Fetch Current Chat Messages
-  useEffect(() => {
-    const getMessages = async () => {
-      try {
-        const res = await fetch(`${BACKEND_URL}/api/messages/${currentChat?._id}`);
-        const data = await res.json();
-        setMessages(Array.isArray(data) ? data : []);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    if (currentChat) getMessages();
-  }, [currentChat, BACKEND_URL]);
-
-  // Handle Send Message
-  const sendMessage = async (e) => {
-    e.preventDefault();
-    if (!newMessage.trim() || !currentChat || !user) return;
-
-    const message = {
-      sender: user.id,
-      text: newMessage,
-      conversationId: currentChat._id
-    };
-
-    const friendId = currentChat.participants.find(p => p._id !== user.id)._id;
-
-    // Send via socket
-    socket.current.emit("sendMessage", {
-      senderId: user.id,
-      receiverId: friendId,
-      text: newMessage,
-      conversationId: currentChat._id
-    });
-
+  const fetchContacts = async () => {
+    setLoadingContacts(true);
     try {
-      // Save to database
-      const res = await fetch(`${BACKEND_URL}/api/messages`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(message)
-      });
-      const savedMessage = await res.json();
-      setMessages(prev => [...prev, savedMessage]);
-      setNewMessage("");
-
-      // Update local conversation list to show correct latest message
-      setConversations(prev => prev.map(c => 
-        c._id === currentChat._id ? { ...c, lastMessage: savedMessage } : c
-      ));
-
+      const response = await fetch('http://localhost:5000/api/contacts');
+      const data = await response.json();
+      setContacts(data);
     } catch (err) {
-      console.error(err);
+      console.error('Error fetching contacts:', err);
+    } finally {
+      setLoadingContacts(false);
     }
   };
 
-  if (!user) return null;
+  const handleScroll = (e) => {
+    if (window.innerWidth > 768) return;
+    const scrollLeft = e.target.scrollLeft;
+    const width = e.target.offsetWidth;
+    if (scrollLeft > width / 2) {
+      setActiveTab('social');
+    } else {
+      setActiveTab('personal');
+    }
+  };
+
+  const scrollToTab = (tab) => {
+    if (scrollRef.current) {
+      const width = scrollRef.current.offsetWidth;
+      scrollRef.current.scrollTo({
+        left: tab === 'personal' ? 0 : width,
+        behavior: 'smooth'
+      });
+      setActiveTab(tab);
+    }
+  };
 
   return (
-    <div style={{ backgroundColor: '#ffffff', height: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ paddingTop: '80px', height: '100vh', display: 'flex', flexDirection: 'column', boxSizing: 'border-box' }}>
       <Navbar />
-      {/* Layout container bounded below Navbar */}
-      <div style={{ flex: 1, display: 'flex', marginTop: '80px', overflow: 'hidden' }}>
-        
-        {/* Left Column - Conversation List */}
-        {(!isMobile || !currentChat) && (
-          <div style={{ width: isMobile ? '100%' : '350px', flexShrink: 0 }}>
-            <ConversationList 
-              conversations={conversations} 
-              currentChat={currentChat} 
-              setCurrentChat={setCurrentChat} 
-              onlineUsers={onlineUsers}
-              currentUser={user} 
-            />
-          </div>
-        )}
 
-        {/* Right Column - Active Chat */}
-        {(!isMobile || currentChat) && (
-          <div style={{ flex: 1, display: isMobile && !currentChat ? 'none' : 'block' }}>
-            <ChatWindow 
-              currentChat={currentChat} 
-              messages={messages} 
-              currentUser={user}
-              newMessage={newMessage}
-              setNewMessage={setNewMessage}
-              sendMessage={sendMessage}
-              setCurrentChat={setCurrentChat}
-              isMobile={isMobile}
-            />
-          </div>
-        )}
+      {/* Selection Links */}
+      {personalView === null && (
+        <div className="tab-nav">
+          <button
+            className={activeTab === 'personal' ? 'active' : ''}
+            onClick={() => scrollToTab('personal')}
+          >
+            Personal
+          </button>
+          <button
+            className={activeTab === 'social' ? 'active' : ''}
+            onClick={() => scrollToTab('social')}
+          >
+            Whats happening around You
+          </button>
+        </div>
+      )}
 
+      <div
+        className="main-layout"
+        ref={scrollRef}
+        onScroll={handleScroll}
+        style={{ flex: 1, backgroundColor: '#000000' }}
+      >
+        <div className="column-main" style={{ display: 'flex', flexDirection: 'column', borderRight: '1px solid #333' }}>
+          {/* Personal Sub-Navbar */}
+          <div style={{ display: 'flex', borderBottom: '1px solid #333', padding: '0 1rem', gap: '1rem', alignItems: 'center' }}>
+            {personalView !== null && (
+              <button
+                onClick={() => setPersonalView(null)}
+                style={{
+                  padding: '1rem',
+                  background: 'none',
+                  border: 'none',
+                  color: '#888',
+                  cursor: 'pointer',
+                  fontWeight: 'bold'
+                }}
+              >
+                ← Back
+              </button>
+            )}
+            <button
+              onClick={() => setPersonalView('contacts')}
+              style={{
+                padding: '1rem',
+                background: 'none',
+                border: 'none',
+                color: personalView === 'contacts' ? '#ffffff' : '#888',
+                borderBottom: personalView === 'contacts' ? '2px solid #ffffff' : 'none',
+                fontWeight: 'bold',
+                cursor: 'pointer'
+              }}
+            >
+              Contacts
+            </button>
+          </div>
+
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '1rem', overflow: 'hidden' }}>
+            {personalView === 'contacts' ? (
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '600px', margin: '0 auto' }}>
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2rem' }}>
+                  <button
+                    onClick={() => navigate('/new-contact')}
+                    style={{
+                      padding: '10px 20px',
+                      backgroundColor: '#ffffff',
+                      color: '#000000',
+                      border: 'none',
+                      borderRadius: '4px',
+                      fontWeight: 'bold',
+                      cursor: 'pointer',
+                      width: '100%'
+                    }}
+                  >
+                    + Add New Contact
+                  </button>
+                </div>
+
+                <h1 style={{ color: '#ffffff', marginBottom: '1.5rem', fontSize: '1.8rem' }}>Your Contacts</h1>
+
+                {loadingContacts ? (
+                  <p style={{ color: '#888', textAlign: 'center' }}>Loading contacts...</p>
+                ) : contacts.length > 0 ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    {contacts.map(contact => (
+                      <div key={contact._id} style={{
+                        padding: '1.2rem',
+                        backgroundColor: '#111',
+                        borderRadius: '8px',
+                        border: '1px solid #222',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
+                      }}>
+                        <div>
+                          <div style={{ color: '#ffffff', fontWeight: 'bold', fontSize: '1.1rem', marginBottom: '0.2rem' }}>{contact.name}</div>
+                          <div style={{ color: '#888', fontSize: '0.9rem' }}>{contact.phone}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div style={{ textAlign: 'center', padding: '3rem 1rem' }}>
+                    <p style={{ color: '#888', marginBottom: '1rem' }}>No contacts found.</p>
+                    <p style={{ color: '#555', fontSize: '0.9rem' }}>Start adding contacts to see them here.</p>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                {/* Empty initially as requested */}
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="column-extra" style={{ display: 'flex', flexDirection: 'column', padding: '1.5rem', borderLeft: '1px solid #333' }}>
+          <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <div style={{ textAlign: 'center' }}>
+              <h1 style={{ color: '#ffffff', marginBottom: '1.5rem' }}>Whats happening around You</h1>
+              <p style={{ color: '#cccccc', marginBottom: '2rem' }}>Discover updates from around you.</p>
+              <button style={{ padding: '12px 24px', backgroundColor: 'transparent', color: '#ffffff', border: '1px solid #ffffff', borderRadius: '4px', cursor: 'pointer', fontSize: '1rem', fontWeight: '500' }}>
+                Explore Feed
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
 function AppContent() {
+  const [appReady, setAppReady] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (location.pathname !== '/') {
+      setAppReady(true);
+    }
+  }, []);
+
+  const handleSplashComplete = () => {
+    setAppReady(true);
+    const params = new URLSearchParams(location.search);
+    const token = localStorage.getItem('token');
+
+    if (location.pathname === '/' && !params.get('view') && !token) {
+      navigate('/login');
+    }
+  };
+
+  const isRoot = location.pathname === '/';
+
   return (
-    <Routes>
+    <>
+      {!appReady && isRoot && <SplashScreen onComplete={handleSplashComplete} />}
+
+      {(appReady || !isRoot) && (
+        <Routes>
+          <Route path="/" element={<MainApp />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/PersonalInformation" element={<PersonalInformation />} />
+          <Route path="/CreateUserName" element={<CreateUserName />} />
+          <Route path="/AddGender" element={<AddGender />} />
+          <Route path="/new-contact" element={<NewContact />} />
+        </Routes>
+      )}
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <Router>
+      <AppContent />
+    </Router>
+  );
+}
       <Route path="/" element={<Login />} />
       <Route path="/home" element={<MainApp />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+    </Routes >
   );
 }
 
