@@ -5,7 +5,7 @@
     height: 80px;
     padding: 0 2rem;
     background-color: #ffffff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-bottom: 1px solid #f0f0f0;
     position: fixed;
     top: 0;
     left: 0;
@@ -16,7 +16,7 @@
 .navbar-brand {
     font-size: 1.5rem;
     font-weight: bold;
-    color: #333;
+    color: #0084ff;
 }
 
 .navbar-brand-link {
@@ -29,31 +29,21 @@
     gap: 1.5rem;
 }
 
-.profile-link {
-    text-decoration: none;
-    color: #666;
-    font-size: 1.1rem;
-    font-weight: 500;
-    transition: color 0.2s;
-}
-
-.profile-link:hover {
-    color: #007bff;
-}
-
-.navbar-links {
-    list-style: none;
-    display: flex;
-    gap: 1.5rem;
-}
-
-.navbar-links li a {
-    text-decoration: none;
-    color: #666;
-    font-size: 1rem;
-    transition: color 0.2s;
-}
-
-.navbar-links li a:hover {
-    color: #333;
+/* Mobile Screens */
+@media screen and (max-width: 768px) {
+    .navbar {
+        padding: 0 1rem;
+    }
+    
+    .navbar-left {
+        overflow-x: auto;
+        white-space: nowrap;
+        padding-bottom: 5px; /* space for scroll if visible */
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+    }
+    
+    .navbar-left::-webkit-scrollbar {
+        display: none; /* Chrome, Safari and Opera */
+    }
 }

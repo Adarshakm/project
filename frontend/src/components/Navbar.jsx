@@ -11,10 +11,6 @@ const Navbar = ({ title = 'Assistance' }) => {
                         {title}
                     </div>
                 </Link>
-                <Link to="/profile" className="profile-link">Profile</Link>
-                <Link to="/business" className="profile-link">Business</Link>
-                <Link to="/news" className="profile-link">News</Link>
-                <Link to="/sports" className="profile-link">Sports</Link>
             </div>
         </nav>
     );

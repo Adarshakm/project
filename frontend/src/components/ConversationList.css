@@ -1,0 +1,102 @@
+.conversation-sidebar {
+    border-right: 1px solid #333;
+    display: flex;
+    flex-direction: column;
+    background: #111;
+}
+
+.sidebar-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #333;
+}
+
+.sidebar-header h2 {
+    margin: 0 0 1rem 0;
+    font-size: 1.5rem;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 10px 15px;
+    border-radius: 20px;
+    border: none;
+    background: #222;
+    color: #fff;
+    font-size: 0.9rem;
+}
+
+.conversation-list {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.conversation-item {
+    display: flex;
+    align-items: center;
+    padding: 0.8rem 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    gap: 12px;
+}
+
+.conversation-item:hover {
+    background: #222;
+}
+
+.conversation-item.active {
+    background: #2a2a2a;
+}
+
+.avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0078FF, #00C6FF);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: #fff;
+}
+
+.details {
+    flex: 1;
+    overflow: hidden;
+}
+
+.details .name {
+    font-weight: 600;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.details .last-message {
+    font-size: 0.85rem;
+    color: #888;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.time {
+    font-size: 0.75rem;
+    color: #555;
+    min-width: 50px;
+    text-align: right;
+}
+
+.search-results h3 {
+    font-size: 0.9rem;
+    color: #888;
+    padding: 1rem;
+    margin: 0;
+}
+
+.no-results {
+    padding: 1rem;
+    color: #555;
+    text-align: center;
+}
