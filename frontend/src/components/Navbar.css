@@ -4,8 +4,8 @@
     align-items: center;
     height: 80px;
     padding: 0 2rem;
-    background-color: #000000;
-    border-bottom: 1px solid #333;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e0e0e0;
     position: fixed;
     top: 0;
     left: 0;
@@ -16,7 +16,7 @@
 .navbar-brand {
     font-size: 1.5rem;
     font-weight: bold;
-    color: #ffffff;
+    color: #000000;
 }
 
 .navbar-brand-link {
@@ -31,14 +31,14 @@
 
 .profile-link {
     text-decoration: none;
-    color: #cccccc;
+    color: #333333;
     font-size: 1.1rem;
     font-weight: 500;
     transition: color 0.2s;
 }
 
 .profile-link:hover {
-    color: #ffffff;
+    color: #000000;
 }
 
 .navbar-links {
@@ -49,7 +49,7 @@
 
 .navbar-links li a {
     text-decoration: none;
-    color: #666;
+    color: #000000;
     font-size: 1rem;
     transition: color 0.2s;
 }
@@ -69,19 +69,19 @@
     gap: 0.8rem;
     padding: 0.5rem 1rem;
     border-radius: 50px;
-    background-color: #111;
-    border: 1px solid #222;
+    background-color: #f0f0f0;
+    border: 1px solid #e0e0e0;
     transition: all 0.2s;
     cursor: pointer;
 }
 
 .navbar-user:hover {
-    background-color: #222;
-    border-color: #444;
+    background-color: #e8e8e8;
+    border-color: #ccc;
 }
 
 .navbar-username {
-    color: #ffffff;
+    color: #000000;
     font-weight: 600;
     font-size: 0.95rem;
 }
@@ -90,14 +90,14 @@
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background-color: #333;
+    background-color: #e0e0e0;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #fff;
+    color: #000;
     font-weight: bold;
     font-size: 0.9rem;
-    border: 1px solid #444;
+    border: 1px solid #ccc;
 }
 
 .logout-btn {

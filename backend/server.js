@@ -22,7 +22,7 @@ const io = new Server(server, {
 
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
+app.use(cors({ origin: "*", methods: ["GET", "POST", "PUT", "DELETE"] }));
 app.use(express.json());
 
 // Main App Routes
@@ -66,8 +66,61 @@ io.on('connection', (socket) => {
 });
 
 app.get('/', (req, res) => {
-  res.send('MERN API is running...');
+  res.send(`
+    <html>
+      <body style="font-family: Arial, sans-serif; padding: 2rem; text-align: center;">
+        <h2>Server is running on port: ${PORT}</h2>
+        <form action="/api/shutdown" method="GET" style="margin-top: 2rem;">
+          <input type="hidden" name="key" value="admin123" />
+          <button type="submit" style="padding: 10px 20px; background-color: #ff4444; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">
+            Shutdown Server
+          </button>
+        </form>
+      </body>
+    </html>
+  `);
 });
+
+// --- SHUTDOWN PROCESS LOGIC ---
+// URL endpoint to trigger shutdown (Use ?key=admin123 to authorize)
+app.get('/api/shutdown', (req, res) => {
+  // Prevent random users from shutting down the server. 
+  // You must append ?key=admin123 to the URL: e.g. /api/shutdown?key=admin123
+  if (req.query.key !== 'admin123') {
+    return res.status(403).send('Unauthorized');
+  }
+
+  res.send('Server shutdown initiated...');
+  console.log('Shutdown requested via URL endpoint.');
+
+  // Trigger the SIGTERM event
+  process.kill(process.pid, 'SIGTERM');
+});
+
+// Listen for the shutdown signal (invoked by the URL or by hosting provider)
+process.on('SIGTERM', () => {
+  console.log('SIGTERM signal received: closing HTTP server gracefully...');
+  server.close(() => {
+    console.log('HTTP server closed.');
+
+    // Close MongoDB connection if it's active
+    if (mongoose.connection.readyState === 1) {
+      mongoose.connection.close(false).then(() => {
+        console.log('MongoDB connection closed.');
+        process.exit(0);
+      });
+    } else {
+      process.exit(0);
+    }
+  });
+});
+
+process.on('SIGINT', () => {
+  console.log('SIGINT signal received (Ctrl+C).');
+  process.kill(process.pid, 'SIGTERM');
+});
+// ------------------------------
+
 
 // Connect to MongoDB and Start Server
 const startServer = async () => {

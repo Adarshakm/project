@@ -5,11 +5,11 @@ const User = require('../models/User');
 
 router.post('/signup', async (req, res) => {
   try {
-    const { fullName, email, password } = req.body;
+    const { fullName, email, phone, password } = req.body;
     let user = await User.findOne({ email });
     if (user) return res.status(400).json({ message: 'User already exists' });
     
-    user = new User({ fullName, email, password });
+    user = new User({ fullName, email, phone, password });
     await user.save();
     
     const payload = { userId: user.id };
@@ -23,8 +23,14 @@ router.post('/signup', async (req, res) => {
 
 router.post('/login', async (req, res) => {
   try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    const { identifier, email, password } = req.body;
+    // Support both "identifier" (from frontend) and "email" (direct)
+    const loginId = identifier || email;
+    
+    // Try finding by email or phone
+    const user = await User.findOne({
+      $or: [{ email: loginId }, { phone: loginId }]
+    });
     if (!user) return res.status(400).json({ message: 'Invalid credentials' });
     
     const isMatch = await user.matchPassword(password);
