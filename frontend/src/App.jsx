@@ -23,9 +23,7 @@ const MainApp = () => {
       {/* Main Hero Space */}
       <div style={{ flex: 1, padding: '3rem 4rem', boxSizing: 'border-box' }}>
         <Link to="/around-you" className="hero-link">
-          <span className="hero-text">Whats Happening</span>
-          <br />
-          <span className="hero-text">Around You</span>
+          <span className="hero-text">Whats Happening Around You</span>
         </Link>
       </div>
     </div>
