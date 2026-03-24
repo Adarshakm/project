@@ -21,11 +21,11 @@ const MainApp = () => {
       <Navbar />
       
       {/* Main Hero Space */}
-      <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '2rem' }}>
+      <div style={{ flex: 1, padding: '3rem 4rem', boxSizing: 'border-box' }}>
         <Link to="/around-you" className="hero-link">
           <span className="hero-text">Whats Happening</span>
           <br />
-          <span className="hero-text neon">Around You</span>
+          <span className="hero-text">Around You</span>
         </Link>
       </div>
     </div>
