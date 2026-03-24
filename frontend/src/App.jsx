@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation, Link } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import SplashScreen from './components/SplashScreen';
 import Login from './pages/Login';
@@ -20,9 +20,13 @@ const MainApp = () => {
     <div style={{ paddingTop: '80px', height: '100vh', display: 'flex', flexDirection: 'column', boxSizing: 'border-box', backgroundColor: '#f8f9fa' }}>
       <Navbar />
       
-      {/* Blank Root Page */}
-      <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#888' }}>
-        <p>Empty Canvas</p>
+      {/* Main Hero Space */}
+      <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '2rem' }}>
+        <Link to="/around-you" className="hero-link">
+          <span className="hero-text">Whats Happening</span>
+          <br />
+          <span className="hero-text neon">Around You</span>
+        </Link>
       </div>
     </div>
   );
