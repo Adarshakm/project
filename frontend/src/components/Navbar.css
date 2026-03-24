@@ -63,6 +63,21 @@
     align-items: center;
 }
 
+.navbar-messages-link {
+    text-decoration: none;
+    color: #000000;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.2s;
+    padding: 0.5rem 1.2rem;
+    border-radius: 8px;
+}
+
+.navbar-messages-link:hover {
+    background-color: #f0f0f0;
+    color: #333333;
+}
+
 .navbar-user {
     display: flex;
     align-items: center;
